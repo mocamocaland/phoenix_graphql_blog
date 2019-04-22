@@ -17,11 +17,17 @@ defmodule BlogWeb.Router do
     pipe_through :browser
 
     get "/", PageController, :index
-    resources "/posts", PostController
+    # resources "/posts", PostController
   end
 
   # Other scopes may use custom stacks.
-  # scope "/api", BlogWeb do
-  #   pipe_through :api
-  # end
+   scope "/api" do
+     pipe_through :api
+
+     forward "/graphiql", Absinthe.Plug.GraphiQL,
+       schema: BlogWeb.Schema
+
+     forward "/", Absinthe.Plug,
+       schema: BlogWeb.Schema
+   end
 end
